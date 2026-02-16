@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Math Adventure</title>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #141E30, #243B55);
+    color: white;
+    overflow-x: hidden;
+}
+
+header {
+    text-align: center;
+    padding: 25px;
+    font-size: 28px;
+    font-weight: bold;
+    background: rgba(0,0,0,0.4);
+    backdrop-filter: blur(10px);
+}
+
+nav {
+    text-align: center;
+    margin: 15px 0;
+}
+
+nav button {
+    margin: 8px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 25px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+    background: #00c6ff;
+    color: white;
+}
+
+nav button:hover {
+    transform: scale(1.1);
+    background: #0072ff;
+}
+
+section {
+    display: none;
+    padding: 20px;
+    max-width: 900px;
+    margin: auto;
+    animation: fade 0.6s ease-in-out;
+}
+
+.active {
+    display: block;
+}
+
+.card {
+    background: rgba(255,255,255,0.1);
+    padding: 20px;
+    border-radius: 20px;
+    margin: 20px 0;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+    backdrop-filter: blur(10px);
+}
+
+button.answer {
+    display: block;
+    width: 100%;
+    margin: 8px 0;
+    padding: 10px;
+    border-radius: 15px;
+    border: none;
+    cursor: pointer;
+    background: #00c6ff;
+    color: white;
+    transition: 0.3s;
+}
+
+button.answer:hover {
+    background: #0072ff;
+    transform: scale(1.05);
+}
+
+.levels button {
+    background: #ff9800;
+}
+
+.score {
+    margin-top: 15px;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+@keyframes fade {
+    from {opacity: 0; transform: translateY(20px);}
+    to {opacity: 1; transform: translateY(0);}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<i class="fas fa-brain"></i> Math Adventure
+</header>
+
+<nav>
+<button onclick="showSection('trig')"><i class="fas fa-wave-square"></i> Тригонометрия</button>
+<button onclick="showSection('log')"><i class="fas fa-calculator"></i> Логарифмы</button>
+<button onclick="showSection('math')"><i class="fas fa-user-graduate"></i> Математики</button>
+</nav>
+
+<!-- Тригонометрия -->
+<section id="trig" class="active">
+<div class="card">
+<h2><i class="fas fa-wave-square"></i> Уровень сложности</h2>
+<div class="levels">
+<button onclick="startTrig('easy')">Лёгкий</button>
+<button onclick="startTrig('medium')">Средний</button>
+<button onclick="startTrig('hard')">Сложный</button>
+</div>
+</div>
+
+<div class="card" id="trigGame"></div>
+<p class="score" id="trigScore">Очки: 0</p>
+</section>
+
+<!-- Логарифмы -->
+<section id="log">
+<div class="card">
+<h2><i class="fas fa-calculator"></i> Уровень сложности</h2>
+<div class="levels">
+<button onclick="startLog('easy')">Лёгкий</button>
+<button onclick="startLog('medium')">Средний</button>
+<button onclick="startLog('hard')">Сложный</button>
+</div>
+</div>
+
+<div class="card" id="logGame"></div>
+<p class="score" id="logScore">Очки: 0</p>
+</section>
+
+<!-- Математики -->
+<section id="math">
+<div class="card">
+<h2><i class="fas fa-user-graduate"></i> Великие математики</h2>
+
+<h3>Исаак Ньютон</h3>
+<p>Создатель дифференциального исчисления и законов механики.</p>
+
+<h3>Леонард Эйлер</h3>
+<p>Ввел число e и современные математические обозначения.</p>
+
+<h3>Джон Непер</h3>
+<p>Изобрел логарифмы.</p>
+
+<h3>Пифагор</h3>
+<p>Автор теоремы Пифагора.</p>
+
+</div>
+</section>
+
+<script>
+let trigPoints = 0;
+let logPoints = 0;
+
+const trigQuestions = {
+easy: {q:"sin(30°) = ?", a:["0.5","1","0"], c:0},
+medium: {q:"cos(60°) = ?", a:["0.5","1","0"], c:0},
+hard: {q:"tan(45°) = ?", a:["0","1","√2"], c:1}
+};
+
+const logQuestions = {
+easy: {q:"log₁₀(100) = ?", a:["1","2","3"], c:1},
+medium: {q:"log₂(8) = ?", a:["2","3","4"], c:1},
+hard: {q:"log₃(27) = ?", a:["2","3","4"], c:1}
+};
+
+function showSection(id){
+document.querySelectorAll("section").forEach(s=>s.classList.remove("active"));
+document.getElementById(id).classList.add("active");
+}
+
+function startTrig(level){
+let data = trigQuestions[level];
+let html = `<h3>${data.q}</h3>`;
+data.a.forEach((ans,i)=>{
+html+=`<button class="answer" onclick="checkTrig(${i},${data.c})">${ans}</button>`;
+});
+document.getElementById("trigGame").innerHTML=html;
+}
+
+function startLog(level){
+let data = logQuestions[level];
+let html = `<h3>${data.q}</h3>`;
+data.a.forEach((ans,i)=>{
+html+=`<button class="answer" onclick="checkLog(${i},${data.c})">${ans}</button>`;
+});
+document.getElementById("logGame").innerHTML=html;
+}
+
+function checkTrig(ans,correct){
+if(ans===correct){trigPoints+=10;alert("✅ Правильно! +10 очков");}
+else{alert("❌ Неправильно");}
+document.getElementById("trigScore").innerText="Очки: "+trigPoints;
+}
+
+function checkLog(ans,correct){
+if(ans===correct){logPoints+=10;alert("✅ Правильно! +10 очков");}
+else{alert("❌ Неправильно");}
+document.getElementById("logScore").innerText="Очки: "+logPoints;
+}
+</script>
+
+</body>
+</html>
